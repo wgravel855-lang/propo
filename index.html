@@ -119,7 +119,7 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-head">
         <h2 id="modalTitle">Settings</h2>
-        <button class="icon-btn" id="modalClose" aria-label="Close">
+        <button class="icon-btn" id="modalClose" data-close aria-label="Close">
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -177,13 +177,13 @@
       <div class="search-head">
         <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <input type="text" id="searchInput" class="search-input" placeholder="Search chats…" autocomplete="off" />
-        <button class="icon-btn" id="searchClose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <button class="icon-btn" id="searchClose" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
       </div>
       <div class="search-results" id="searchResults"></div>
     </div>
   </div>
 
-  <script src="engine.js"></script>
-  <script src="app.js"></script>
+  <script src="engine.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
