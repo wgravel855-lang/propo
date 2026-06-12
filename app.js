@@ -505,6 +505,8 @@
      ========================================================================= */
   const modalScrim = $("modalScrim");
   function openSettings() {
+    closeSearch();           // never stack modals
+    closeNav();
     // hydrate controls
     document.querySelectorAll("#providerSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.prov === provider));
     document.querySelectorAll("#themeSeg .seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.themeVal === (store.raw(LS.theme, "light"))));
@@ -554,6 +556,8 @@
      ========================================================================= */
   const searchScrim = $("searchScrim");
   function openSearch() {
+    closeSettings();         // never stack modals
+    closeNav();
     searchScrim.hidden = false;
     $("searchInput").value = "";
     renderSearch("");
