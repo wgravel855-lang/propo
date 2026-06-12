@@ -14,6 +14,7 @@
     theme: "dropgen.theme.v1",
     provider: "dropgen.provider.v1",
     key: "dropgen.key.v1",
+    sidebar: "dropgen.sidebar.v1",   // "open" | "closed"  (default closed)
   };
   const store = {
     get(k, fallback) { try { const v = localStorage.getItem(k); return v == null ? fallback : JSON.parse(v); } catch { return fallback; } },
@@ -22,6 +23,32 @@
     rawSet(k, v) { try { localStorage.setItem(k, v); } catch {} },
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
+
+  /* ---------- plans & usage ---------- */
+  LS.plan = "dropgen.plan.v1";    // free | starter | pro | elite
+  LS.usage = "dropgen.usage.v1";  // { date, count }
+  const PLANS = {
+    free:    { name: "Free plan",    daily: 5,        paid: false },
+    starter: { name: "Starter plan", daily: 20,       paid: true },
+    pro:     { name: "Pro plan",     daily: Infinity, paid: true },
+    elite:   { name: "Elite plan",   daily: Infinity, paid: true },
+  };
+  const getPlan = () => (PLANS[store.raw(LS.plan, "free")] ? store.raw(LS.plan, "free") : "free");
+  const planConf = () => PLANS[getPlan()];
+  const isUnlocked = () => ["pro", "elite"].includes(getPlan()); // Daily Winners full feed
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+  function getUsage() {
+    let u = store.get(LS.usage, { date: "", count: 0 });
+    if (u.date !== todayStr()) { u = { date: todayStr(), count: 0 }; store.set(LS.usage, u); }
+    return u;
+  }
+  function searchesLeft() {
+    const lim = planConf().daily;
+    if (lim === Infinity) return Infinity;
+    return Math.max(0, lim - getUsage().count);
+  }
+  const canSearch = () => searchesLeft() > 0;
+  function recordSearch() { const u = getUsage(); u.count += 1; store.set(LS.usage, u); updatePlanUI(); }
 
   /* ---------- state ---------- */
   let chats = store.get(LS.chats, {});            // { id: { id, title, created, messages:[{role, text?, blocks?}], shown:[] } }
@@ -147,9 +174,56 @@
           </button>`).join("")}</div>`;
       case "actions":
         return `<div class="blk actions">${b.items.map((a) => `<button class="action-chip" data-prompt="${esc(a.prompt)}">${esc(a.label)}</button>`).join("")}</div>`;
+      case "feed-header":
+        return `<div class="blk feed-header">
+          <div class="fh-row">
+            <span class="fh-bolt"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
+            <div><h3>🔥 ${esc(b.title)}</h3><div class="fh-date">${esc(b.date)} · ${b.count} opportunities</div></div>
+          </div>
+          <div class="fh-sub">${esc(b.subtitle)}</div>
+        </div>`;
+      case "winner": {
+        const w = b.w;
+        return `<button class="blk winner" data-prompt="${esc(w.prompt)}">
+          <span class="winner-emoji">${w.emoji}</span>
+          <span class="winner-body">
+            <span class="winner-name">${esc(w.name)}</span>
+            <span class="winner-meta"><span>${esc(w.niche)}</span><span class="wm-up">↑ ${w.momentum}% this week</span></span>
+          </span>
+          ${sparkSVG(w.spark)}
+          <span class="winner-conf"><span class="wc-num">${w.confidence}</span><span class="wc-cap">Confidence</span></span>
+        </button>`;
+      }
+      case "locked-winners":
+        return `<div class="blk locked-winners">
+          <div class="lw-head"><svg viewBox="0 0 24 24" width="15" height="15"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 018 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> ${b.count} more winners waiting</div>
+          ${b.items.slice(0, 4).map(() => `<div class="locked-row"><span class="lr-e">🔒</span><span class="lr-bar"></span></div>`).join("")}
+        </div>`;
+      case "paywall":
+        return `<div class="blk paywall">
+          <div class="pw-title"><span class="pw-lock"><svg viewBox="0 0 24 24" width="15" height="15"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V8a4 4 0 018 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>${esc(b.title)}</div>
+          <p class="pw-body">${esc(b.body)}</p>
+          ${b.bullets ? `<ul class="pw-feats">${b.bullets.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+          <button class="pw-cta" data-action="pricing">${esc(b.cta || "See plans")}</button>
+        </div>`;
       default:
         return "";
     }
+  }
+
+  /* tiny upward sparkline for a winner card */
+  function sparkSVG(pts) {
+    const w = 84, h = 34, pad = 3;
+    const min = Math.min(...pts), max = Math.max(...pts), range = Math.max(1, max - min);
+    const step = (w - pad * 2) / (pts.length - 1);
+    const coords = pts.map((v, i) => [pad + i * step, h - pad - ((v - min) / range) * (h - pad * 2)]);
+    const line = coords.map((c, i) => (i ? "L" : "M") + c[0].toFixed(1) + " " + c[1].toFixed(1)).join(" ");
+    const area = line + ` L${(w - pad).toFixed(1)} ${h - pad} L${pad} ${h - pad} Z`;
+    return `<svg class="winner-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <path d="${area}" fill="var(--accent-soft)"></path>
+      <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="${coords[coords.length - 1][0].toFixed(1)}" cy="${coords[coords.length - 1][1].toFixed(1)}" r="2.4" fill="var(--accent)"></circle>
+    </svg>`;
   }
 
   function renderBlocksHTML(blocks) { return blocks.map(renderBlock).join(""); }
@@ -176,12 +250,27 @@
   /* =========================================================================
      MESSAGE FLOW
      ========================================================================= */
+  let lastUserEl = null;   // the most recent question, used as the scroll anchor
+
+  // a flexible spacer kept at the end of the thread so a fresh question can
+  // always be scrolled to the very top, even when the answer is short.
+  let tailSpacer = null;
+  function ensureSpacer() {
+    if (!tailSpacer) {
+      tailSpacer = document.createElement("div");
+      tailSpacer.className = "tail-spacer";
+    }
+    messagesEl.appendChild(tailSpacer); // always move to the end
+  }
+
   function appendUserMessage(text) {
     const div = document.createElement("div");
     div.className = "msg user fade-in";
     div.innerHTML = `<div class="bubble">${esc(text)}</div>`;
     messagesEl.appendChild(div);
+    ensureSpacer();
     scrollDown();
+    return div;
   }
 
   function appendAssistantNode(innerHTML, animate = true) {
@@ -189,8 +278,8 @@
     div.className = "msg assistant fade-in";
     div.innerHTML = `<div class="assistant-body">${innerHTML}</div>`;
     messagesEl.appendChild(div);
+    ensureSpacer();
     if (animate) animateMetrics(div);
-    scrollDown();
     return div;
   }
 
@@ -199,11 +288,29 @@
     div.className = "msg assistant";
     div.innerHTML = `<div class="assistant-body"><div class="typing"><span></span><span></span><span></span></div></div>`;
     messagesEl.appendChild(div);
+    ensureSpacer();
     scrollDown();
     return div;
   }
 
   function scrollDown() { thread.scrollTop = thread.scrollHeight; }
+
+  // ChatGPT-style: pin the question to the top so the answer begins right below
+  // it and is read from the start (instead of jumping to the bottom/middle).
+  function anchorToQuestion(answerEl) {
+    if (!lastUserEl) { scrollDown(); return; }
+    if (tailSpacer) tailSpacer.style.height = "0px";
+    requestAnimationFrame(() => {
+      const tTop = thread.getBoundingClientRect().top;
+      const uTop = lastUserEl.getBoundingClientRect().top;
+      const aBottom = (answerEl || lastUserEl).getBoundingClientRect().bottom;
+      const exchange = aBottom - uTop;                 // height of question + answer
+      const pad = Math.max(0, thread.clientHeight - exchange - 24);
+      if (tailSpacer) tailSpacer.style.height = pad + "px";
+      // place the question ~16px below the top of the scroll area
+      thread.scrollTop += (lastUserEl.getBoundingClientRect().top - tTop) - 16;
+    });
+  }
 
   function showThread() {
     welcome.hidden = true;
@@ -219,6 +326,8 @@
   /* render a whole chat (on switch / load) */
   function renderChat(chat) {
     messagesEl.innerHTML = "";
+    if (tailSpacer) tailSpacer.style.height = "0px";
+    lastUserEl = null;
     if (!chat || chat.messages.length === 0) { showWelcome(); return; }
     showThread();
     for (const m of chat.messages) {
@@ -227,6 +336,7 @@
         div.className = "msg user";
         div.innerHTML = `<div class="bubble">${esc(m.text)}</div>`;
         messagesEl.appendChild(div);
+        lastUserEl = div;
       } else {
         const html = m.blocks ? renderBlocksHTML(m.blocks) : `<div class="blk blk-text">${mdInline(m.text || "")}</div>`;
         const node = appendAssistantNode(html, false);
@@ -236,6 +346,7 @@
         node.querySelectorAll(".score-fill").forEach((el) => (el.style.width = el.dataset.w + "%"));
       }
     }
+    ensureSpacer();
     scrollDown();
   }
 
@@ -253,10 +364,21 @@
     }
 
     showThread();
-    appendUserMessage(text);
+    lastUserEl = appendUserMessage(text);
     chat.messages.push({ role: "user", text });
     saveChats();
     renderHistory();
+
+    // soft paywall: out of daily searches -> show upgrade prompt, don't burn a search
+    if (!canSearch()) {
+      const blocks = window.DROPGEN.paywallBlocks("limit", { plan: getPlan() });
+      const node = appendAssistantNode(renderBlocksHTML(blocks));
+      anchorToQuestion(node);
+      chat.messages.push({ role: "assistant", blocks });
+      saveChats();
+      return;
+    }
+    recordSearch();
 
     busy = true;
     setComposerEnabled(false);
@@ -272,7 +394,8 @@
       typing.remove();
       const msg = "Something broke on that request. " + (err && err.message ? err.message : "Try again, or switch back to the built-in engine in Settings.");
       const blocks = [{ type: "text", text: msg }];
-      appendAssistantNode(renderBlocksHTML(blocks));
+      const node = appendAssistantNode(renderBlocksHTML(blocks));
+      anchorToQuestion(node);
       chat.messages.push({ role: "assistant", blocks });
       saveChats();
     } finally {
@@ -289,7 +412,8 @@
       setTimeout(() => {
         const { blocks, shown } = dropgenRespond(text, chat.shown || []);
         typing.remove();
-        appendAssistantNode(renderBlocksHTML(blocks));
+        const node = appendAssistantNode(renderBlocksHTML(blocks));
+        anchorToQuestion(node);
         chat.messages.push({ role: "assistant", blocks });
         if (shown) { chat.shown = chat.shown || []; if (!chat.shown.includes(shown)) chat.shown.push(shown); }
         saveChats();
@@ -310,6 +434,7 @@
     typing.remove();
     const node = appendAssistantNode(`<div class="blk blk-text" id="streamTarget"></div>`, false);
     const target = node.querySelector("#streamTarget");
+    anchorToQuestion(node); // pin question to top before the answer streams in
 
     if (provider === "openai") {
       const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -322,7 +447,7 @@
         }),
       });
       if (!res.ok) throw new Error("OpenAI " + res.status + " — check your key/model.");
-      full = await readSSE(res, (delta) => { target.innerHTML = mdLite(full += delta); scrollDown(); }, "openai");
+      full = await readSSE(res, (delta) => { target.innerHTML = mdLite(full += delta); }, "openai");
     } else {
       // anthropic
       const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -342,9 +467,10 @@
         }),
       });
       if (!res.ok) throw new Error("Anthropic " + res.status + " — check your key.");
-      full = await readSSE(res, (delta) => { target.innerHTML = mdLite(full += delta); scrollDown(); }, "anthropic");
+      full = await readSSE(res, (delta) => { target.innerHTML = mdLite(full += delta); }, "anthropic");
     }
 
+    anchorToQuestion(node); // re-fit once the full answer is in
     chat.messages.push({ role: "assistant", text: full });
     saveChats();
   }
@@ -457,9 +583,17 @@
   }
 
   /* =========================================================================
-     NAV (mobile)
+     SIDEBAR TOGGLE (single button, works desktop + mobile)
      ========================================================================= */
-  function openNav() { app.classList.add("nav-open"); }
+  const isMobile = () => window.matchMedia("(max-width: 860px)").matches;
+  function toggleSidebar() {
+    if (isMobile()) {
+      app.classList.toggle("nav-open");
+    } else {
+      app.classList.toggle("collapsed");
+      store.rawSet(LS.sidebar, app.classList.contains("collapsed") ? "closed" : "open");
+    }
+  }
   function closeNav() { app.classList.remove("nav-open"); }
 
   /* =========================================================================
@@ -500,6 +634,15 @@
     if (closer) {
       const scrim = closer.closest(".modal-scrim");
       if (scrim) scrim.hidden = true;
+      return;
+    }
+
+    // 3) data-action buttons (paywall "See plans", etc.)
+    const actEl = e.target.closest("[data-action]");
+    if (actEl) {
+      const a = actEl.dataset.action;
+      if (a === "pricing") openPricing();
+      else if (a === "daily") runDailyWinners();
       return;
     }
 
@@ -563,14 +706,7 @@
     closeSettings();
   });
 
-  function updatePlanLabel() {
-    const hasKey = !!store.raw(LS.key, "");
-    if (provider !== "builtin" && hasKey) {
-      planLabel.textContent = provider === "openai" ? "Live · OpenAI" : "Live · Anthropic";
-    } else {
-      planLabel.textContent = "Built-in engine";
-    }
-  }
+  function updatePlanLabel() { updatePlanUI(); }
 
   /* =========================================================================
      SEARCH MODAL
@@ -609,19 +745,108 @@
   });
 
   /* =========================================================================
+     DAILY WINNERS FEED
+     ========================================================================= */
+  function runDailyWinners() {
+    let chat = activeChat();
+    if (!chat || chat.messages.length > 0) chat = newChat();
+    chat.title = "Daily Winners";
+    showThread();
+    const q = "Show me today's winning products";
+    lastUserEl = appendUserMessage(q);
+    chat.messages.push({ role: "user", text: q });
+    renderHistory();
+    const typing = appendTyping();
+    setTimeout(() => {
+      typing.remove();
+      const blocks = window.DROPGEN.dailyWinnersBlocks({ unlocked: isUnlocked() });
+      const node = appendAssistantNode(renderBlocksHTML(blocks));
+      anchorToQuestion(node);
+      chat.messages.push({ role: "assistant", blocks });
+      saveChats();
+    }, 480);
+    closeNav();
+  }
+
+  /* =========================================================================
+     PRICING MODAL + PLAN UI
+     ========================================================================= */
+  const pricingScrim = $("pricingScrim");
+  function openPricing() {
+    closeSettings(); closeSearch(); closeNav();
+    const plan = getPlan();
+    document.querySelectorAll(".tier").forEach((t) => t.classList.toggle("current-plan", t.dataset.tier === plan));
+    document.querySelectorAll("[data-choose]").forEach((b) => {
+      const isCurrent = b.dataset.choose === plan;
+      if (b.classList.contains("tier-btn")) b.textContent = isCurrent ? "Current plan" : ("Choose " + b.dataset.choose.charAt(0).toUpperCase() + b.dataset.choose.slice(1));
+    });
+    $("currentPlanNote").textContent = "You're on the " + planConf().name + ".";
+    pricingScrim.hidden = false;
+  }
+  function closePricing() { pricingScrim.hidden = true; }
+  function choosePlan(plan) {
+    if (!PLANS[plan]) return;
+    store.rawSet(LS.plan, plan);
+    updatePlanUI();
+    closePricing();
+    if (plan === "free") toast("Switched to the Free plan.");
+    else toast("🎉 You're on " + PLANS[plan].name + " — " + (PLANS[plan].daily === Infinity ? "unlimited searches unlocked." : PLANS[plan].daily + " searches a day."));
+  }
+
+  function updatePlanUI() {
+    const plan = getPlan(), conf = planConf();
+    const left = searchesLeft(), lim = conf.daily;
+    const card = $("planCard"), fill = $("usageFill");
+    // sidebar plan card
+    $("planCardName").textContent = conf.name;
+    if (lim === Infinity) {
+      $("planUsage").textContent = "Unlimited";
+      fill.style.width = "100%"; fill.className = "usage-fill";
+    } else {
+      $("planUsage").textContent = left + " / " + lim + " left today";
+      const pct = Math.max(4, (left / lim) * 100);
+      fill.style.width = pct + "%";
+      fill.className = "usage-fill" + (left === 0 ? " out" : left <= Math.max(1, lim * 0.2) ? " low" : "");
+    }
+    card.classList.toggle("is-paid", conf.paid);
+    const up = $("upgradeBtn");
+    if (plan === "elite") { up.innerHTML = eliteBadge(); up.removeAttribute("data-action"); up.disabled = true; }
+    else { up.removeAttribute("disabled"); up.setAttribute("data-action", "pricing"); up.innerHTML = upgradeIcon() + (conf.paid ? "Manage plan" : "Upgrade plan"); }
+    // workspace sub-label
+    $("planLabel").textContent = conf.paid ? conf.name : (provider !== "builtin" && store.raw(LS.key, "") ? planLabelLive() : "Free · built-in engine");
+    // daily badge: lock for free/starter
+    $("dailyBadge").textContent = isUnlocked() ? "10" : "🔒";
+  }
+  function upgradeIcon() { return '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M5 16l3-8 4 5 4-7 3 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>'; }
+  function eliteBadge() { return upgradeIcon() + "Elite — all unlocked"; }
+  function planLabelLive() { return provider === "openai" ? "Live · OpenAI" : "Live · Anthropic"; }
+
+  /* toast */
+  let toastTimer = null;
+  function toast(msg) {
+    const t = $("toast");
+    t.textContent = msg; t.hidden = false;
+    requestAnimationFrame(() => t.classList.add("show"));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.classList.remove("show"); setTimeout(() => (t.hidden = true), 260); }, 3200);
+  }
+
+  /* =========================================================================
      BIND TOP-LEVEL UI
      ========================================================================= */
   $("newChatBtn").addEventListener("click", () => { newChat(); renderHistory(); showWelcome(); messagesEl.innerHTML = ""; $("welcomeInput").focus(); closeNav(); });
   $("searchBtn").addEventListener("click", openSearch);
+  $("dailyBtn").addEventListener("click", runDailyWinners);
   $("libraryBtn").addEventListener("click", () => { send("Show me the top winning products across every niche"); closeNav(); });
   $("settingsBtn").addEventListener("click", openSettings);
   $("modalClose").addEventListener("click", closeSettings);
   $("searchClose").addEventListener("click", closeSearch);
   modalScrim.addEventListener("click", (e) => { if (e.target === modalScrim) closeSettings(); });
   searchScrim.addEventListener("click", (e) => { if (e.target === searchScrim) closeSearch(); });
+  pricingScrim.addEventListener("click", (e) => { if (e.target === pricingScrim) closePricing(); });
+  document.querySelectorAll("[data-choose]").forEach((b) => b.addEventListener("click", () => choosePlan(b.dataset.choose)));
   $("themeBtn").addEventListener("click", () => applyTheme(store.raw(LS.theme, "light") === "dark" ? "light" : "dark"));
-  $("collapseBtn").addEventListener("click", () => app.classList.toggle("collapsed"));
-  $("menuBtn").addEventListener("click", openNav);
+  $("menuBtn").addEventListener("click", toggleSidebar);
   $("scrim").addEventListener("click", closeNav);
 
   document.addEventListener("keydown", (e) => {
@@ -636,6 +861,9 @@
     // defensive: never start trapped behind a modal
     document.querySelectorAll(".modal-scrim").forEach((m) => (m.hidden = true));
     app.classList.remove("nav-open");
+
+    // sidebar closed by default (remembers the user's last desktop choice)
+    if (store.raw(LS.sidebar, "closed") !== "open") app.classList.add("collapsed");
 
     applyTheme(store.raw(LS.theme, "light"));
     updatePlanLabel();
