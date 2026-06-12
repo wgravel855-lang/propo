@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=5" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23059669'/><path d='M30 28h22c14 0 22 9 22 22s-8 22-22 22H30V28zm14 12v20h7c6 0 10-4 10-10s-4-10-10-10h-7z' fill='white'/></svg>" />
 </head>
 <body>
@@ -20,9 +20,6 @@
         <div class="brand">
           <span class="brand-mark" aria-hidden="true">D</span>
           <span class="brand-name">DROPGEN</span>
-          <button class="icon-btn collapse-btn" id="collapseBtn" title="Collapse sidebar" aria-label="Collapse sidebar">
-            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 4v16M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </button>
         </div>
 
         <nav class="nav">
@@ -33,6 +30,11 @@
           <button class="nav-item" id="searchBtn">
             <svg viewBox="0 0 24 24" class="nav-ico"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             Search chats
+          </button>
+          <button class="nav-item" id="dailyBtn">
+            <svg viewBox="0 0 24 24" class="nav-ico"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            Daily Winners
+            <span class="nav-badge" id="dailyBadge">10</span>
           </button>
           <button class="nav-item" id="libraryBtn">
             <svg viewBox="0 0 24 24" class="nav-ico"><path d="M5 4h4v16H5zM10 4h4v16h-4zM16 5l3 1-3 14-3-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -47,6 +49,18 @@
       </div>
 
       <div class="sidebar-bottom">
+        <div class="plan-card" id="planCard">
+          <div class="plan-card-top">
+            <span class="plan-card-name" id="planCardName">Free plan</span>
+            <span class="plan-card-meta" id="planUsage">5 searches left today</span>
+          </div>
+          <div class="usage-bar" id="usageBar"><div class="usage-fill" id="usageFill"></div></div>
+          <button class="upgrade-btn" id="upgradeBtn" data-action="pricing">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path d="M5 16l3-8 4 5 4-7 3 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            Upgrade plan
+          </button>
+        </div>
+
         <button class="user-row" id="settingsBtn">
           <span class="avatar">DG</span>
           <span class="user-meta">
@@ -63,8 +77,8 @@
     <!-- ============ MAIN ============ -->
     <main class="main">
       <header class="topbar">
-        <button class="icon-btn menu-btn" id="menuBtn" title="Menu" aria-label="Open sidebar">
-          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <button class="icon-btn menu-btn" id="menuBtn" title="Toggle sidebar" aria-label="Toggle sidebar">
+          <svg viewBox="0 0 24 24" width="20" height="20"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 4.5v15" stroke="currentColor" stroke-width="1.7"/></svg>
         </button>
         <div class="topbar-title">DROPGEN <span class="topbar-sub">Product Research</span></div>
         <div class="topbar-right">
@@ -188,7 +202,68 @@
     </div>
   </div>
 
-  <script src="engine.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+  <!-- ============ PRICING MODAL ============ -->
+  <div class="modal-scrim" id="pricingScrim" hidden>
+    <div class="pricing-modal" role="dialog" aria-modal="true" aria-labelledby="pricingTitle">
+      <div class="pricing-head">
+        <div>
+          <h2 id="pricingTitle">Find more winners, faster</h2>
+          <p class="pricing-sub">Upgrade for unlimited research and your daily edge. Cancel anytime.</p>
+        </div>
+        <button class="icon-btn" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      </div>
+
+      <div class="tiers">
+        <div class="tier" data-tier="starter">
+          <div class="tier-name">Starter</div>
+          <div class="tier-price"><span class="tp-amt">$19</span><span class="tp-per">/mo</span></div>
+          <ul class="tier-feats">
+            <li>20 product searches / day</li>
+            <li>Winning Product Scores</li>
+            <li>Supplier & profit breakdowns</li>
+            <li>TikTok hooks & descriptions</li>
+          </ul>
+          <button class="tier-btn" data-choose="starter">Choose Starter</button>
+        </div>
+
+        <div class="tier featured" data-tier="pro">
+          <div class="tier-flag">Most popular</div>
+          <div class="tier-name">Pro</div>
+          <div class="tier-price"><span class="tp-amt">$49</span><span class="tp-per">/mo</span></div>
+          <ul class="tier-feats">
+            <li><strong>Unlimited</strong> searches</li>
+            <li>Daily Winners feed — 10/day</li>
+            <li>Saturation checker</li>
+            <li>Store finder</li>
+            <li>Everything in Starter</li>
+          </ul>
+          <button class="tier-btn primary" data-choose="pro">Choose Pro</button>
+        </div>
+
+        <div class="tier" data-tier="elite">
+          <div class="tier-name">Elite</div>
+          <div class="tier-price"><span class="tp-amt">$99</span><span class="tp-per">/mo</span></div>
+          <ul class="tier-feats">
+            <li>Advanced AI research agent</li>
+            <li>Competitor tracking</li>
+            <li>Team access (5 seats)</li>
+            <li>Priority new-data access</li>
+            <li>Everything in Pro</li>
+          </ul>
+          <button class="tier-btn" data-choose="elite">Choose Elite</button>
+        </div>
+      </div>
+
+      <div class="pricing-foot">
+        <span id="currentPlanNote">You're on the Free plan.</span>
+        <button class="link-btn" data-choose="free">Switch to Free</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="engine.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
