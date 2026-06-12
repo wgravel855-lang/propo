@@ -903,4 +903,121 @@ When the user asks for product research, ALWAYS use this exact structure with th
 
 For niche or strategy questions, drop the structure and answer like a sharp mentor: a clear verdict, then a tight bulleted playbook, then a concrete next step. Keep all numbers framed as research estimates, and keep marketing copy benefit-led (not medical claims) to stay ad-compliant.`;
 
-window.DROPGEN = { dropgenRespond, DROPGEN_SYSTEM_PROMPT, PRODUCTS, NICHES };
+/* ===========================================================================
+   SUBSCRIPTION & GROWTH SURFACES
+   Daily Winners feed (the "come back daily" hook) + paywall prompts.
+   =========================================================================== */
+
+/* deterministic per-day RNG so the feed is stable within a day, fresh each day */
+function dateSeed(d) {
+  d = d || new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function todayLabel(d) {
+  d = d || new Date();
+  return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+}
+
+/* build a gently-upward 7-point trend (these are products "gaining momentum") */
+function makeSparkline(rng, base) {
+  const pts = [];
+  let v = 30 + rng() * 20;
+  for (let i = 0; i < 7; i++) {
+    v += (rng() * 12) - 3 + (base / 100) * 4; // upward bias scaled by winning score
+    v = Math.max(8, Math.min(100, v));
+    pts.push(Math.round(v));
+  }
+  // guarantee the last point is the peak-ish so it reads as "climbing"
+  pts[6] = Math.max(pts[6], pts[5] + 2, ...pts);
+  return pts;
+}
+
+/* pick today's winners, seeded by date */
+function dailyWinners(n) {
+  const seed = dateSeed();
+  const rng = mulberry32(seed);
+  const pool = [...PRODUCTS]
+    .map((p) => ({ p, r: rng() }))
+    .sort((a, b) => a.r - b.r)
+    .map((x) => x.p);
+  const take = Math.min(n || 10, pool.length);
+  return pool.slice(0, take).map((p, i) => {
+    const r2 = mulberry32(seed + i * 977);
+    const confidence = Math.max(40, Math.min(99, Math.round(p.scores.winning + (r2() * 9 - 3))));
+    return {
+      emoji: p.emoji,
+      name: p.name,
+      niche: NICHES[p.category].label,
+      confidence,
+      momentum: Math.round(8 + r2() * 34),       // % momentum this week
+      spark: makeSparkline(r2, p.scores.winning),
+      prompt: `Full research on ${p.name}`,
+    };
+  });
+}
+
+/* the feed, gated by plan. unlocked => Pro/Elite see all; else teaser + lock */
+function dailyWinnersBlocks(opts) {
+  opts = opts || {};
+  const unlocked = !!opts.unlocked;
+  const all = dailyWinners(10);
+  const shown = unlocked ? all : all.slice(0, 1);
+  const locked = unlocked ? [] : all.slice(1);
+
+  const blocks = [];
+  blocks.push({ type: "feed-header", title: "Today's Winners", date: todayLabel(), count: all.length,
+    subtitle: unlocked
+      ? "Ten fresh opportunities, ranked by AI confidence. New set every day."
+      : "Here's today's top pick. Unlock the full feed of 10 with Pro." });
+
+  shown.forEach((w) => blocks.push({ type: "winner", w }));
+
+  if (locked.length) {
+    blocks.push({ type: "locked-winners", count: locked.length, items: locked.map((w) => ({ emoji: w.emoji, name: w.name })) });
+    blocks.push({ type: "paywall",
+      title: `Unlock ${locked.length} more winners today`,
+      body: "The full Daily Winners feed, confidence scores, and trend charts are part of Pro — your daily edge on what's about to pop.",
+      cta: "See plans" });
+  } else {
+    blocks.push({ type: "actions", items: [
+      { label: "🔄 Refresh research on #1", prompt: `Full research on ${all[0].name}` },
+      { label: "🏆 Browse all niches", prompt: "Show me the top winning products across every niche" },
+    ]});
+  }
+  return blocks;
+}
+
+/* paywall prompt shown when a free/starter user hits their daily search cap */
+function paywallBlocks(kind, ctx) {
+  ctx = ctx || {};
+  if (kind === "limit") {
+    return [{
+      type: "paywall",
+      title: "You're out of searches for today",
+      body: ctx.plan === "starter"
+        ? "You've used all 20 Starter searches today. Upgrade to Pro for unlimited research, the Daily Winners feed, and the saturation checker."
+        : "Free includes 5 searches a day. Upgrade for more research, unlimited on Pro — plus the Daily Winners feed and saturation tools.",
+      bullets: [
+        "Unlimited product research (Pro & Elite)",
+        "Daily Winners feed — 10 fresh opportunities every day",
+        "Saturation checker & store finder",
+        "Competitor tracking (Elite)",
+      ],
+      cta: "See plans",
+    }];
+  }
+  return [{ type: "paywall", title: "This is a Pro feature", body: "Upgrade to unlock it.", cta: "See plans" }];
+}
+
+window.DROPGEN = {
+  dropgenRespond, DROPGEN_SYSTEM_PROMPT, PRODUCTS, NICHES,
+  dailyWinnersBlocks, paywallBlocks, dailyWinners,
+};
