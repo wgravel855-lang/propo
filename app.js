@@ -488,8 +488,21 @@
     });
   }
 
-  /* delegate clicks for chips / actions / picks / history */
+  /* delegate clicks for chips / actions / picks / history + bulletproof modal close */
   document.addEventListener("click", (e) => {
+    // 1) clicking the dark backdrop of ANY modal closes it (works even if other handlers failed)
+    if (e.target.classList && e.target.classList.contains("modal-scrim")) {
+      e.target.hidden = true;
+      return;
+    }
+    // 2) any element marked data-close closes its containing modal
+    const closer = e.target.closest("[data-close]");
+    if (closer) {
+      const scrim = closer.closest(".modal-scrim");
+      if (scrim) scrim.hidden = true;
+      return;
+    }
+
     const promptEl = e.target.closest("[data-prompt]");
     if (promptEl) { send(promptEl.dataset.prompt); return; }
 
@@ -499,6 +512,14 @@
     const hist = e.target.closest(".history-item");
     if (hist && !e.target.closest("[data-del]")) { switchChat(hist.dataset.id); return; }
   });
+
+  /* hard safety: close every modal whenever Escape is pressed (capture phase) */
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      document.querySelectorAll(".modal-scrim").forEach((m) => (m.hidden = true));
+      app.classList.remove("nav-open");
+    }
+  }, true);
 
   /* =========================================================================
      SETTINGS MODAL
@@ -612,6 +633,10 @@
      INIT
      ========================================================================= */
   function init() {
+    // defensive: never start trapped behind a modal
+    document.querySelectorAll(".modal-scrim").forEach((m) => (m.hidden = true));
+    app.classList.remove("nav-open");
+
     applyTheme(store.raw(LS.theme, "light"));
     updatePlanLabel();
     wireComposer("welcomeInput", "welcomeSend");
