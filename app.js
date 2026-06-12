@@ -187,7 +187,7 @@
   function appendAssistantNode(innerHTML, animate = true) {
     const div = document.createElement("div");
     div.className = "msg assistant fade-in";
-    div.innerHTML = `<div class="bubble-wrap"><div class="assistant-mark">D</div><div class="assistant-body">${innerHTML}</div></div>`;
+    div.innerHTML = `<div class="assistant-body">${innerHTML}</div>`;
     messagesEl.appendChild(div);
     if (animate) animateMetrics(div);
     scrollDown();
@@ -197,7 +197,7 @@
   function appendTyping() {
     const div = document.createElement("div");
     div.className = "msg assistant";
-    div.innerHTML = `<div class="bubble-wrap"><div class="assistant-mark">D</div><div class="assistant-body"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+    div.innerHTML = `<div class="assistant-body"><div class="typing"><span></span><span></span><span></span></div></div>`;
     messagesEl.appendChild(div);
     scrollDown();
     return div;
