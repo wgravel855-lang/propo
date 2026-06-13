@@ -32,8 +32,8 @@ const PRODUCTS = [
     compWeaknesses: "Sizing complaints and returns; most stores skip a fit guide — your opening.",
     profit: { cost: 4.20, ship: 2.10, sell: 39.99, },
     suppliers: [
-      { name: "AliExpress — Orthopedic Store", price: "$4.20", rating: "4.7★ (12k+ orders)", ship: "8–14 days (US)" },
-      { name: "CJ Dropshipping", price: "$5.40", rating: "4.8★", ship: "6–10 days (US warehouse)" },
+      { name: "AliExpress — Orthopedic Store", price: "$4.20", rating: "4.7/5 (12k+ orders)", ship: "8–14 days (US)" },
+      { name: "CJ Dropshipping", price: "$5.40", rating: "4.8/5", ship: "6–10 days (US warehouse)" },
       { name: "Alibaba (bulk)", price: "$2.10 @ 500 units", rating: "Gold, 6 yrs", ship: "Sea/air freight" }
     ],
     hooks: [
@@ -74,9 +74,9 @@ const PRODUCTS = [
     compWeaknesses: "Getting crowded; differentiate with app control, music sync, or a premium bundle.",
     profit: { cost: 8.50, ship: 3.20, sell: 44.99 },
     suppliers: [
-      { name: "AliExpress — Smart Lighting Store", price: "$8.50", rating: "4.8★ (30k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$10.10", rating: "4.7★", ship: "5–9 days (US)" },
-      { name: "Temu wholesale", price: "$7.90", rating: "4.6★", ship: "10–16 days" }
+      { name: "AliExpress — Smart Lighting Store", price: "$8.50", rating: "4.8/5 (30k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$10.10", rating: "4.7/5", ship: "5–9 days (US)" },
+      { name: "Temu wholesale", price: "$7.90", rating: "4.6/5", ship: "10–16 days" }
     ],
     hooks: [
       "Turning my boring bedroom into a galaxy in 5 seconds…",
@@ -116,8 +116,8 @@ const PRODUCTS = [
     compWeaknesses: "Skeptical buyers — lean hard on demos, guarantees, and real reviews.",
     profit: { cost: 9.80, ship: 2.60, sell: 54.99 },
     suppliers: [
-      { name: "AliExpress — Health Care Store", price: "$9.80", rating: "4.6★ (8k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$11.50", rating: "4.8★", ship: "6–10 days (US)" },
+      { name: "AliExpress — Health Care Store", price: "$9.80", rating: "4.6/5 (8k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$11.50", rating: "4.8/5", ship: "6–10 days (US)" },
       { name: "Alibaba (bulk)", price: "$6.40 @ 300 units", rating: "Gold, 5 yrs", ship: "Air freight" }
     ],
     hooks: [
@@ -158,9 +158,9 @@ const PRODUCTS = [
     compWeaknesses: "Brand-name competition; win on price-to-value bundle and fresh creative.",
     profit: { cost: 7.30, ship: 3.40, sell: 34.99 },
     suppliers: [
-      { name: "AliExpress — Kitchen Gadgets Store", price: "$7.30", rating: "4.7★ (20k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$8.90", rating: "4.8★", ship: "6–10 days (US)" },
-      { name: "Temu wholesale", price: "$6.80", rating: "4.5★", ship: "10–16 days" }
+      { name: "AliExpress — Kitchen Gadgets Store", price: "$7.30", rating: "4.7/5 (20k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$8.90", rating: "4.8/5", ship: "6–10 days (US)" },
+      { name: "Temu wholesale", price: "$6.80", rating: "4.5/5", ship: "10–16 days" }
     ],
     hooks: [
       "Making a smoothie in the back of an Uber because why not.",
@@ -200,8 +200,8 @@ const PRODUCTS = [
     compWeaknesses: "Brand-name dominates Amazon — win on TikTok-native creative and bundles.",
     profit: { cost: 3.10, ship: 2.30, sell: 24.99 },
     suppliers: [
-      { name: "AliExpress — Pet Clean Store", price: "$3.10", rating: "4.8★ (40k+ orders)", ship: "8–14 days" },
-      { name: "CJ Dropshipping", price: "$4.30", rating: "4.7★", ship: "5–9 days (US)" },
+      { name: "AliExpress — Pet Clean Store", price: "$3.10", rating: "4.8/5 (40k+ orders)", ship: "8–14 days" },
+      { name: "CJ Dropshipping", price: "$4.30", rating: "4.7/5", ship: "5–9 days (US)" },
       { name: "Alibaba (bulk)", price: "$1.70 @ 1000 units", rating: "Gold, 7 yrs", ship: "Sea/air" }
     ],
     hooks: [
@@ -242,8 +242,8 @@ const PRODUCTS = [
     compWeaknesses: "Needs trust-building; testimonials and a guarantee close the sale.",
     profit: { cost: 11.20, ship: 2.80, sell: 59.99 },
     suppliers: [
-      { name: "AliExpress — Relax Health Store", price: "$11.20", rating: "4.7★ (9k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$13.40", rating: "4.8★", ship: "6–10 days (US)" },
+      { name: "AliExpress — Relax Health Store", price: "$11.20", rating: "4.7/5 (9k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$13.40", rating: "4.8/5", ship: "6–10 days (US)" },
       { name: "Alibaba (bulk)", price: "$7.90 @ 300 units", rating: "Gold, 6 yrs", ship: "Air freight" }
     ],
     hooks: [
@@ -284,9 +284,9 @@ const PRODUCTS = [
     compWeaknesses: "Saturated on Amazon — TikTok-native creative + a tight bundle win.",
     profit: { cost: 6.10, ship: 3.60, sell: 32.99 },
     suppliers: [
-      { name: "AliExpress — Kitchen Tools Store", price: "$6.10", rating: "4.7★ (25k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$7.80", rating: "4.8★", ship: "6–10 days (US)" },
-      { name: "Temu wholesale", price: "$5.40", rating: "4.6★", ship: "10–16 days" }
+      { name: "AliExpress — Kitchen Tools Store", price: "$6.10", rating: "4.7/5 (25k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$7.80", rating: "4.8/5", ship: "6–10 days (US)" },
+      { name: "Temu wholesale", price: "$5.40", rating: "4.6/5", ship: "10–16 days" }
     ],
     hooks: [
       "Meal prep just got stupidly easy.",
@@ -326,9 +326,9 @@ const PRODUCTS = [
     compWeaknesses: "Crowded — differentiate with branding, colors, and creator content.",
     profit: { cost: 4.90, ship: 3.10, sell: 26.99 },
     suppliers: [
-      { name: "AliExpress — Comfort Shoes Store", price: "$4.90", rating: "4.8★ (50k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$6.20", rating: "4.7★", ship: "6–10 days (US)" },
-      { name: "Temu wholesale", price: "$4.30", rating: "4.6★", ship: "10–16 days" }
+      { name: "AliExpress — Comfort Shoes Store", price: "$4.90", rating: "4.8/5 (50k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$6.20", rating: "4.7/5", ship: "6–10 days (US)" },
+      { name: "Temu wholesale", price: "$4.30", rating: "4.6/5", ship: "10–16 days" }
     ],
     hooks: [
       "It genuinely feels like stepping on a marshmallow.",
@@ -368,9 +368,9 @@ const PRODUCTS = [
     compWeaknesses: "Seasonal demand swings — diversify creatives by use case (travel, sports, hot jobs).",
     profit: { cost: 6.70, ship: 3.30, sell: 32.99 },
     suppliers: [
-      { name: "AliExpress — Cooling Store", price: "$6.70", rating: "4.6★ (15k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$8.10", rating: "4.7★", ship: "6–10 days (US)" },
-      { name: "Temu wholesale", price: "$5.90", rating: "4.5★", ship: "10–16 days" }
+      { name: "AliExpress — Cooling Store", price: "$6.70", rating: "4.6/5 (15k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$8.10", rating: "4.7/5", ship: "6–10 days (US)" },
+      { name: "Temu wholesale", price: "$5.90", rating: "4.5/5", ship: "10–16 days" }
     ],
     hooks: [
       "Surviving a heat wave hands-free.",
@@ -410,9 +410,9 @@ const PRODUCTS = [
     compWeaknesses: "Very saturated + strong brands — win on bundles, creators, and niche rooms (gaming, studio).",
     profit: { cost: 5.40, ship: 2.90, sell: 27.99 },
     suppliers: [
-      { name: "AliExpress — Smart Lighting Store", price: "$5.40", rating: "4.7★ (35k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$6.80", rating: "4.8★", ship: "6–10 days (US)" },
-      { name: "Temu wholesale", price: "$4.90", rating: "4.6★", ship: "10–16 days" }
+      { name: "AliExpress — Smart Lighting Store", price: "$5.40", rating: "4.7/5 (35k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$6.80", rating: "4.8/5", ship: "6–10 days (US)" },
+      { name: "Temu wholesale", price: "$4.90", rating: "4.6/5", ship: "10–16 days" }
     ],
     hooks: [
       "Room glow-up in under 60 seconds.",
@@ -452,8 +452,8 @@ const PRODUCTS = [
     compWeaknesses: "Misuse complaints — add a usage guide to cut returns and build trust.",
     profit: { cost: 7.60, ship: 2.50, sell: 36.99 },
     suppliers: [
-      { name: "AliExpress — Beauty Tools Store", price: "$7.60", rating: "4.6★ (18k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$9.20", rating: "4.7★", ship: "6–10 days (US)" },
+      { name: "AliExpress — Beauty Tools Store", price: "$7.60", rating: "4.6/5 (18k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$9.20", rating: "4.7/5", ship: "6–10 days (US)" },
       { name: "Alibaba (bulk)", price: "$4.80 @ 500 units", rating: "Gold, 5 yrs", ship: "Air freight" }
     ],
     hooks: [
@@ -494,8 +494,8 @@ const PRODUCTS = [
     compWeaknesses: "Slower, education-driven sale — content must teach the benefit.",
     profit: { cost: 8.40, ship: 4.10, sell: 44.99 },
     suppliers: [
-      { name: "AliExpress — Yoga Wellness Store", price: "$8.40", rating: "4.7★ (10k+ orders)", ship: "9–15 days" },
-      { name: "CJ Dropshipping", price: "$10.10", rating: "4.8★", ship: "6–10 days (US)" },
+      { name: "AliExpress — Yoga Wellness Store", price: "$8.40", rating: "4.7/5 (10k+ orders)", ship: "9–15 days" },
+      { name: "CJ Dropshipping", price: "$10.10", rating: "4.8/5", ship: "6–10 days (US)" },
       { name: "Alibaba (bulk)", price: "$5.60 @ 300 units", rating: "Gold, 6 yrs", ship: "Air/sea" }
     ],
     hooks: [
@@ -717,7 +717,7 @@ function nicheBlocks(niche) {
     tagline: p.tagline, prompt: `Full research on ${p.name}`
   }))});
   blocks.push({ type: "actions", items: picks.map(p => ({
-    label: `${p.emoji} ${p.name}`, prompt: `Full research on ${p.name}`
+    label: `${p.name}`, prompt: `Full research on ${p.name}`
   }))});
   return blocks;
 }
@@ -815,6 +815,109 @@ function adviceBlocks(q) {
 }
 
 /* ---------- Main entry: returns blocks for a user query -------------------- */
+/* ---------- AI Research Agent: parse constraints, return a ranked shortlist -- */
+function parseFilters(q) {
+  const s = (q || "").toLowerCase();
+  const f = { any: false };
+
+  // min markup: "4x markup", "4× markup", "at least 3x"
+  let m = s.match(/(\d+(?:\.\d+)?)\s*[x×]/);
+  if (m && /[x×]/.test(s) && /markup|margin|return|potential|profit|[x×]/.test(s)) { f.minMarkup = parseFloat(m[1]); f.any = true; }
+
+  // min margin %: "80%+ margin", "margin over 60%"
+  m = s.match(/(\d+)\s*%\s*\+?\s*(?:profit\s*)?margin/) || s.match(/margin\s*(?:above|over|of|at least|>)?\s*(\d+)\s*%?/);
+  if (m) { f.minMargin = parseFloat(m[1]); f.any = true; }
+
+  // explicit supplier cost: "$20 cost", "cost under $15", "source under $10"
+  m = s.match(/\$?\s*(\d+(?:\.\d+)?)\s*(?:dollars?|usd)?\s*(?:\/?\s*unit|each)?\s*cost\b/)
+   || s.match(/(?:cost|source|sourcing|supplier|buy)[^$\d]{0,14}\$?\s*(\d+(?:\.\d+)?)/);
+  if (m) { f.maxCost = parseFloat(m[1]); f.any = true; }
+
+  // explicit sell price: "sell under $30", "retail $40", "price below $25"
+  m = s.match(/(?:sell|selling|retail|retails|price)[^$\d]{0,14}\$?\s*(\d+(?:\.\d+)?)/);
+  if (m) { f.maxSell = parseFloat(m[1]); f.any = true; }
+
+  // bare "under $X" with no cost/sell keyword -> assume supplier cost (the common filter)
+  if (f.maxCost == null && f.maxSell == null) {
+    m = s.match(/(?:under|below|less than|max(?:imum)?)\s*\$\s*(\d+(?:\.\d+)?)/);
+    if (m) { f.maxCost = parseFloat(m[1]); f.any = true; }
+  }
+
+  // min winning score
+  m = s.match(/score\s*(?:above|over|of|at least|>)?\s*(\d{2})/);
+  if (m) { f.minScore = parseFloat(m[1]); f.any = true; }
+  if (/high.?(winning)?.?score|high potential|highest scoring/.test(s)) { f.minScore = Math.max(f.minScore || 0, 75); f.any = true; }
+
+  // niche
+  const n = detectNiche(q);
+  if (n) { f.niche = n; if (/niche|category/.test(s)) f.any = true; }
+  if (n && /find|show|give|list|products?|items?/.test(s) && /with|under|over|that|in the/.test(s)) f.any = true;
+
+  return f;
+}
+
+function describeFilters(f) {
+  const parts = [];
+  if (f.maxCost != null) parts.push(`supplier cost ≤ ${fmt(f.maxCost)}`);
+  if (f.minMarkup != null) parts.push(`≥ ${f.minMarkup}× markup`);
+  if (f.minMargin != null) parts.push(`≥ ${f.minMargin}% margin`);
+  if (f.maxSell != null) parts.push(`sells under ${fmt(f.maxSell)}`);
+  if (f.minScore != null) parts.push(`Winning Score ≥ ${f.minScore}`);
+  if (f.niche) parts.push(`${NICHES[f.niche].label} niche`);
+  return parts;
+}
+
+function matchFilters(f) {
+  return PRODUCTS.filter((p) => {
+    const landed = p.profit.cost + p.profit.ship;
+    const markup = p.profit.sell / landed;
+    const marginPct = ((p.profit.sell - landed) / p.profit.sell) * 100;
+    if (f.maxCost != null && p.profit.cost > f.maxCost) return false;
+    if (f.minMarkup != null && markup < f.minMarkup - 0.05) return false;
+    if (f.minMargin != null && marginPct < f.minMargin) return false;
+    if (f.maxSell != null && p.profit.sell > f.maxSell) return false;
+    if (f.minScore != null && p.scores.winning < f.minScore) return false;
+    if (f.niche && p.category !== f.niche) return false;
+    return true;
+  }).sort((a, b) => b.scores.winning - a.scores.winning);
+}
+
+function agentStat(p) {
+  const landed = p.profit.cost + p.profit.ship;
+  const markup = (p.profit.sell / landed).toFixed(1);
+  return `Cost ${fmt(p.profit.cost)} · ${markup}× markup · sells ${fmt(p.profit.sell)} · Score ${p.scores.winning}`;
+}
+
+function researchAgentBlocks(q, f) {
+  const matches = matchFilters(f);
+  const crit = describeFilters(f);
+  const blocks = [];
+
+  if (matches.length) {
+    blocks.push({ type: "text", text: `Found **${matches.length}** ${matches.length === 1 ? "product" : "products"} matching: ${crit.join(" · ") || "your query"}. Ranked by Winning Score.` });
+    blocks.push({ type: "picklist", items: matches.map((p) => ({
+      name: p.name, score: p.scores.winning, tagline: agentStat(p), prompt: `Full research on ${p.name}`,
+    }))});
+    blocks.push({ type: "actions", items: [
+      { label: `Full research on ${matches[0].name}`, prompt: `Full research on ${matches[0].name}` },
+      { label: "Loosen the filters", prompt: f.niche ? `Show me winning products in the ${NICHES[f.niche].label} niche` : "Find me a winning product" },
+    ]});
+    return blocks;
+  }
+
+  // no exact matches -> relax to niche (or overall) and show closest
+  const fallback = (f.niche ? topByNiche(f.niche, 4) : topOverall(4));
+  blocks.push({ type: "text", text: `No products cleared every filter (${crit.join(" · ")}). That usually means the constraints are tighter than the current catalog — here are the closest high-scoring options to consider, or loosen one filter.` });
+  blocks.push({ type: "picklist", items: fallback.map((p) => ({
+    name: p.name, score: p.scores.winning, tagline: agentStat(p), prompt: `Full research on ${p.name}`,
+  }))});
+  blocks.push({ type: "actions", items: [
+    { label: "Find me a winning product", prompt: "Find me a winning product" },
+    { label: "Best niche for beginners", prompt: "What's the best niche for a beginner dropshipper?" },
+  ]});
+  return blocks;
+}
+
 function dropgenRespond(query, shownIds = []) {
   const q = (query || "").trim();
   const s = q.toLowerCase();
@@ -826,6 +929,12 @@ function dropgenRespond(query, shownIds = []) {
   }
   if (prodForAsset && /(landing page|landing|page copy|website copy|sales page)/.test(s)) {
     return { blocks: landingBlocks(prodForAsset), shown: prodForAsset.id };
+  }
+
+  // AI Research Agent: constraint-based queries (cost, markup, margin, price, score)
+  const filters = parseFilters(q);
+  if (filters.any) {
+    return { blocks: researchAgentBlocks(q, filters), shown: null };
   }
 
   // Niche-overview intent: a niche keyword + "browse" phrasing -> overview w/ picks
@@ -889,19 +998,19 @@ const DROPGEN_SYSTEM_PROMPT = `You are DROPGEN, a 7-figure dropshipping mentor a
 
 PERSONALITY: Direct, data-driven, practical, zero fluff, fast and confident. Friendly but never wishy-washy. Never say "it depends." Never give vague or generic advice. Always give concrete product examples, supplier descriptions, and marketing angles. Always end with an actionable next step.
 
-When the user asks for product research, ALWAYS use this exact structure with these emoji headers:
+When the user asks for product research, ALWAYS use this exact structure with clean bold text headers (NO emojis, NO icons anywhere in your output):
 
-📦 [Product Name] — short, brandable
-🔥 Why It's Winning — 3 to 6 bullets
-📈 Validation Scores — Winning Score (0-100), Demand Score, Competition Score, Saturation Score, Viral Potential
-🔍 Competitor Analysis — competitor price, ad angles, strengths, weaknesses
-💰 Profit Breakdown — supplier cost, shipping cost, recommended selling price, profit margin %
-🚚 Supplier Options — 2-4 suppliers (AliExpress / CJ Dropshipping / Temu / Alibaba) with price, rating, shipping time
-🎥 TikTok Ad Hooks — 3 to 5 viral hooks
-📝 Product Description — short, clean, high-converting
-🧩 Upsells + Bundles — 2 to 4 ideas
+**Product** — short, brandable name
+**Why It's Winning** — 3 to 6 bullets
+**Validation Scores** — Winning Score (0-100), Demand, Competition, Saturation, Viral Potential
+**Competitor Analysis** — competitor price, ad angles, strengths, weaknesses
+**Profit Breakdown** — supplier cost, shipping cost, recommended selling price, profit margin %
+**Supplier Options** — 2-4 suppliers (AliExpress / CJ Dropshipping / Temu / Alibaba) with price, rating, shipping time
+**TikTok Ad Hooks** — 3 to 5 viral hooks
+**Product Description** — short, clean, high-converting
+**Upsells + Bundles** — 2 to 4 ideas
 
-For niche or strategy questions, drop the structure and answer like a sharp mentor: a clear verdict, then a tight bulleted playbook, then a concrete next step. Keep all numbers framed as research estimates, and keep marketing copy benefit-led (not medical claims) to stay ad-compliant.`;
+Never use emojis or decorative symbols in your responses. For niche or strategy questions, drop the structure and answer like a sharp mentor: a clear verdict, then a tight bulleted playbook, then a concrete next step. Keep all numbers framed as research estimates, and keep marketing copy benefit-led (not medical claims) to stay ad-compliant.`;
 
 /* ===========================================================================
    SUBSCRIPTION & GROWTH SURFACES
@@ -988,8 +1097,8 @@ function dailyWinnersBlocks(opts) {
       cta: "See plans" });
   } else {
     blocks.push({ type: "actions", items: [
-      { label: "🔄 Refresh research on #1", prompt: `Full research on ${all[0].name}` },
-      { label: "🏆 Browse all niches", prompt: "Show me the top winning products across every niche" },
+      { label: "Refresh research on #1", prompt: `Full research on ${all[0].name}` },
+      { label: "Browse all niches", prompt: "Show me the top winning products across every niche" },
     ]});
   }
   return blocks;
