@@ -1,11 +1,12 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback } from "react"
+import { createContext, useContext, useState, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Bookmark, Check, Loader2, X } from "lucide-react"
 import { useSession } from "@/lib/auth-client"
 import { saveItem } from "@/app/actions/saved"
 import { AuthModal } from "@/components/auth-modal"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 type SavePayload = {
   kind: string
@@ -17,6 +18,8 @@ type SavePayload = {
 
 type SaveContextValue = {
   requestSave: (payload: SavePayload) => void
+  openUpgrade: () => void
+  openAuth: () => void
 }
 
 const SaveContext = createContext<SaveContextValue | null>(null)
@@ -32,7 +35,23 @@ export function SaveProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [pending, setPending] = useState<SavePayload | null>(null)
   const [authOpen, setAuthOpen] = useState(false)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle")
+
+  const openUpgrade = useCallback(() => setUpgradeOpen(true), [])
+  const openAuth = useCallback(() => setAuthOpen(true), [])
+
+  // Allow opening these modals from anywhere via custom events
+  useEffect(() => {
+    const onUpgrade = () => setUpgradeOpen(true)
+    const onAuth = () => setAuthOpen(true)
+    document.addEventListener("open-upgrade-modal", onUpgrade)
+    document.addEventListener("open-auth-modal", onAuth)
+    return () => {
+      document.removeEventListener("open-upgrade-modal", onUpgrade)
+      document.removeEventListener("open-auth-modal", onAuth)
+    }
+  }, [])
 
   const requestSave = useCallback(
     (payload: SavePayload) => {
@@ -65,7 +84,7 @@ export function SaveProvider({ children }: { children: React.ReactNode }) {
   const showDialog = pending && (session?.user || isPending)
 
   return (
-    <SaveContext.Provider value={{ requestSave }}>
+    <SaveContext.Provider value={{ requestSave, openUpgrade, openAuth }}>
       {children}
 
       {/* Save-to-collection dialog */}
@@ -123,6 +142,8 @@ export function SaveProvider({ children }: { children: React.ReactNode }) {
         }}
         reason="Sign in to save this to your collection."
       />
+
+      <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} />
     </SaveContext.Provider>
   )
 }
