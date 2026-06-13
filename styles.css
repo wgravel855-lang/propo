@@ -96,6 +96,9 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
   min-width: 0;
 }
+/* keep contents at full width so collapsing clips them cleanly (no squeeze) */
+.sidebar-top, .sidebar-mid, .sidebar-bottom { width: 264px; flex-shrink: 0; }
+.sidebar-mid { flex: 1 1 auto; }
 .sidebar-top { padding: 12px 10px 4px; }
 .brand {
   display: flex; align-items: center; gap: 10px;
@@ -619,8 +622,8 @@ button { font-family: inherit; cursor: pointer; }
 .paywall .pw-lock { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; flex: none; }
 .paywall .pw-body { font-size: 14px; color: var(--text); margin: 9px 0 0; }
 .paywall .pw-feats { list-style: none; margin: 13px 0 16px; padding: 0; display: flex; flex-direction: column; gap: 7px; }
-.paywall .pw-feats li { position: relative; padding-left: 22px; font-size: 13.5px; }
-.paywall .pw-feats li::before { content: "✓"; position: absolute; left: 2px; color: var(--accent-ink); font-weight: 800; }
+.paywall .pw-feats li { position: relative; padding-left: 18px; font-size: 13.5px; }
+.paywall .pw-feats li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 .paywall .pw-cta {
   border: none; background: var(--accent); color: #fff; padding: 11px 20px;
   border-radius: 10px; font-size: 14px; font-weight: 600; transition: background .15s, transform .1s;
@@ -641,7 +644,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 860px) {
   .app { grid-template-columns: 1fr; }
   .sidebar {
-    position: fixed; top: 0; left: 0; bottom: 0; width: 280px; z-index: 40;
+    position: fixed; top: 0; left: 0; bottom: 0; width: 264px; z-index: 40;
     transform: translateX(-100%); transition: transform .25s ease;
     border-right: 1px solid var(--line);
   }
