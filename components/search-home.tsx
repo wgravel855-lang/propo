@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { ArrowUp, Compass, ScanSearch, Building2, TrendingUp } from "lucide-react"
-import { LogoMark } from "@/components/logo"
 
 const examples = [
   { label: "Find trending fitness products", icon: TrendingUp },
@@ -23,9 +22,6 @@ export function SearchHome({ onSubmit }: { onSubmit: (q: string) => void }) {
     <div className="ambient-backdrop flex flex-1 flex-col overflow-y-auto">
       <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-6 py-16">
         <div className="mb-10 flex flex-col items-center text-center">
-          <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-elevated">
-            <LogoMark size={30} />
-          </div>
           <p className="mb-3 text-sm text-muted-foreground">Good afternoon, Jordan</p>
           <h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             What would you like to research?
