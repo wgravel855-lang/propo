@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/app-shell"
 import { PageHeader } from "@/components/page-header"
-import { PromptEntry } from "@/components/prompt-entry"
+import { AnalyzerView } from "@/components/analyzer-view"
 
 export default function AnalyzerPage() {
   return (
@@ -8,14 +8,9 @@ export default function AnalyzerPage() {
       <div className="flex-1 overflow-y-auto">
         <PageHeader
           title="Product Analyzer"
-          description="Paste a product name or URL and get a full intelligence report — demand, margins, competitors, and a launch verdict."
+          description="Enter a product and get a full AI intelligence report — viability score, pros and cons, pricing, and a launch verdict."
         />
-        <div className="px-6 py-10 sm:px-10">
-          <PromptEntry
-            placeholder="Enter a product name or paste a product URL..."
-            suggestions={["Portable blender", "Collagen creamer", "Posture corrector", "LED sunset projector"]}
-          />
-        </div>
+        <AnalyzerView />
       </div>
     </AppShell>
   )

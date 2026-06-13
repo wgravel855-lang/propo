@@ -11,7 +11,7 @@ export default function AppPage() {
   return (
     <AppShell>
       {query ? (
-        <ResearchWorkspace query={query} onReset={() => setQuery(null)} />
+        <ResearchWorkspace query={query} onReset={() => setQuery(null)} onNewQuery={setQuery} />
       ) : (
         <SearchHome onSubmit={setQuery} />
       )}
