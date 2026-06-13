@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23059669'/><path d='M30 28h22c14 0 22 9 22 22s-8 22-22 22H30V28zm14 12v20h7c6 0 10-4 10-10s-4-10-10-10h-7z' fill='white'/></svg>" />
 </head>
 <body>
@@ -100,18 +100,10 @@
           </div>
 
           <div class="chips" id="chips">
-            <button class="chip" data-prompt="Find me a winning product">
-              <svg viewBox="0 0 24 24" class="chip-ico"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4zM6 6H4a2 2 0 002 4M18 6h2a2 2 0 01-2 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Find a winning product
-            </button>
-            <button class="chip" data-prompt="What's the best niche for a beginner dropshipper?">
-              <svg viewBox="0 0 24 24" class="chip-ico"><path d="M4 14a8 8 0 0116 0M12 6v0M12 14l3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="1.3" fill="currentColor"/></svg>
-              Research a niche
-            </button>
-            <button class="chip" data-prompt="Write a full TikTok ad script for PostureFix Pro">
-              <svg viewBox="0 0 24 24" class="chip-ico"><path d="M5 4h11l3 3v13H5zM16 4v3h3M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Write an ad script
-            </button>
+            <button class="chip" data-prompt="Find me a winning product">Find a winning product</button>
+            <button class="chip" data-prompt="Find products under $20 cost with 4x markup in the pet niche">Run the research agent</button>
+            <button class="chip" data-prompt="What's the best niche for a beginner dropshipper?">Research a niche</button>
+            <button class="chip" data-prompt="Write a full TikTok ad script for PostureFix Pro">Write an ad script</button>
           </div>
         </div>
       </section>
@@ -169,7 +161,7 @@
               <button data-prov="anthropic" class="seg-btn">Anthropic</button>
             </div>
             <input type="password" id="apiKeyInput" class="text-input" placeholder="sk-… (stored locally, never sent anywhere but the provider)" autocomplete="off" />
-            <div class="set-hint warn" id="keyWarn" hidden>⚠️ Browser-side keys are visible to anyone using this deployed site. For a public store, route calls through a small serverless function instead. Fine for personal/local use.</div>
+            <div class="set-hint warn" id="keyWarn" hidden>Browser-side keys are visible to anyone using this deployed site. For a public store, route calls through a small serverless function instead. Fine for personal/local use.</div>
           </div>
         </div>
 
@@ -263,7 +255,7 @@
 
   <div class="toast" id="toast" hidden></div>
 
-  <script src="engine.js?v=8"></script>
-  <script src="app.js?v=8"></script>
+  <script src="engine.js?v=9"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>
