@@ -112,11 +112,10 @@
       case "text":
         return `<div class="blk blk-text">${mdInline(b.text)}</div>`;
       case "section":
-        return `<div class="section-head"><span class="sec-ico">${b.icon}</span>${esc(b.title)}</div>`;
+        return `<div class="section-head">${esc(b.title)}</div>`;
       case "product-header":
         return `<div class="blk product-header">
-          <div class="ph-emoji">${b.emoji}</div>
-          <div class="ph-text"><h3>📦 ${esc(b.name)}</h3><p>${esc(b.tagline)}</p></div>
+          <div class="ph-text"><h3>${esc(b.name)}</h3><p>${esc(b.tagline)}</p></div>
         </div>`;
       case "winning-gauge":
         return `<div class="blk">${gauge(b.score, b.label)}</div>`;
@@ -141,7 +140,7 @@
         return `<div class="blk dg-table">${b.rows.map((r) => `
           <div class="dg-row">
             <div class="dr-top"><span class="dr-name">${esc(r.name)}</span><span class="dr-price">${esc(r.price)}</span></div>
-            <div class="dr-meta"><span>⭐ ${esc(r.rating)}</span><span>🚚 ${esc(r.ship)}</span></div>
+            <div class="dr-meta"><span>Rating ${esc(r.rating)}</span><span>Ships ${esc(r.ship)}</span></div>
           </div>`).join("")}</div>`;
       case "profit": {
         const d = b.data;
@@ -168,7 +167,6 @@
       case "picklist":
         return `<div class="blk picklist">${b.items.map((p) => `
           <button class="pick" data-prompt="${esc(p.prompt)}">
-            <span class="pick-emoji">${p.emoji}</span>
             <span class="pick-body"><span class="pick-name">${esc(p.name)}</span><span class="pick-tag">${esc(p.tagline)}</span></span>
             <span class="pick-score"><span class="ps-num">${p.score}</span><span class="ps-cap">Score</span></span>
           </button>`).join("")}</div>`;
@@ -176,19 +174,16 @@
         return `<div class="blk actions">${b.items.map((a) => `<button class="action-chip" data-prompt="${esc(a.prompt)}">${esc(a.label)}</button>`).join("")}</div>`;
       case "feed-header":
         return `<div class="blk feed-header">
-          <div class="fh-row">
-            <span class="fh-bolt"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
-            <div><h3>🔥 ${esc(b.title)}</h3><div class="fh-date">${esc(b.date)} · ${b.count} opportunities</div></div>
-          </div>
+          <h3>${esc(b.title)}</h3>
+          <div class="fh-date">${esc(b.date)} · ${b.count} opportunities</div>
           <div class="fh-sub">${esc(b.subtitle)}</div>
         </div>`;
       case "winner": {
         const w = b.w;
         return `<button class="blk winner" data-prompt="${esc(w.prompt)}" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left">
-          <span class="winner-emoji">${w.emoji}</span>
           <span class="winner-body" style="flex:1;min-width:0;overflow:hidden">
             <span class="winner-name" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(w.name)}</span>
-            <span class="winner-meta"><span>${esc(w.niche)}</span><span class="wm-up">↑ ${w.momentum}% this week</span></span>
+            <span class="winner-meta"><span>${esc(w.niche)}</span><span class="wm-up">+${w.momentum}% this week</span></span>
           </span>
           ${sparkSVG(w.spark)}
           <span class="winner-conf" style="flex:none"><span class="wc-num">${w.confidence}</span><span class="wc-cap">Confidence</span></span>
@@ -196,12 +191,12 @@
       }
       case "locked-winners":
         return `<div class="blk locked-winners">
-          <div class="lw-head"><svg viewBox="0 0 24 24" width="15" height="15"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 018 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> ${b.count} more winners waiting</div>
-          ${b.items.slice(0, 4).map(() => `<div class="locked-row"><span class="lr-e">🔒</span><span class="lr-bar"></span></div>`).join("")}
+          <div class="lw-head">${b.count} more winners — unlock with Pro</div>
+          ${b.items.slice(0, 4).map(() => `<div class="locked-row"><span class="lr-bar"></span></div>`).join("")}
         </div>`;
       case "paywall":
         return `<div class="blk paywall">
-          <div class="pw-title"><span class="pw-lock"><svg viewBox="0 0 24 24" width="15" height="15"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V8a4 4 0 018 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>${esc(b.title)}</div>
+          <div class="pw-title">${esc(b.title)}</div>
           <p class="pw-body">${esc(b.body)}</p>
           ${b.bullets ? `<ul class="pw-feats">${b.bullets.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
           <button class="pw-cta" data-action="pricing">${esc(b.cta || "See plans")}</button>
@@ -308,6 +303,8 @@
   // real data backend is wired — these mirror the actual pipeline steps)
   function thinkingSteps(q) {
     const s = (q || "").toLowerCase();
+    if (/under \$?\d|\d+\s*[x×]\s*\+?\s*(markup|margin)|cost (under|below)|margin (above|over)|markup/.test(s))
+      return ["Reading your filters…", "Scanning the catalog…", "Scoring & ranking matches…"];
     if (/daily|today.*winner|winning products/.test(s) && /today|daily/.test(s))
       return ["Pulling today's movers…", "Scoring AI confidence…", "Charting 7-day momentum…"];
     if (/(ad script|tiktok script|script|ugc|hook)/.test(s))
@@ -840,7 +837,7 @@
     updatePlanUI();
     closePricing();
     if (plan === "free") toast("Switched to the Free plan.");
-    else toast("🎉 You're on " + PLANS[plan].name + " — " + (PLANS[plan].daily === Infinity ? "unlimited searches unlocked." : PLANS[plan].daily + " searches a day."));
+    else toast("You're on " + PLANS[plan].name + " — " + (PLANS[plan].daily === Infinity ? "unlimited searches unlocked." : PLANS[plan].daily + " searches a day."));
   }
 
   function updatePlanUI() {
@@ -860,15 +857,13 @@
     }
     card.classList.toggle("is-paid", conf.paid);
     const up = $("upgradeBtn");
-    if (plan === "elite") { up.innerHTML = eliteBadge(); up.removeAttribute("data-action"); up.disabled = true; }
-    else { up.removeAttribute("disabled"); up.setAttribute("data-action", "pricing"); up.innerHTML = upgradeIcon() + (conf.paid ? "Manage plan" : "Upgrade plan"); }
+    if (plan === "elite") { up.innerHTML = "Elite — all unlocked"; up.removeAttribute("data-action"); up.disabled = true; }
+    else { up.removeAttribute("disabled"); up.setAttribute("data-action", "pricing"); up.innerHTML = (conf.paid ? "Manage plan" : "Upgrade plan"); }
     // workspace sub-label
     $("planLabel").textContent = conf.paid ? conf.name : (provider !== "builtin" && store.raw(LS.key, "") ? planLabelLive() : "Free · built-in engine");
     // daily badge: lock for free/starter
-    $("dailyBadge").textContent = isUnlocked() ? "10" : "🔒";
+    $("dailyBadge").textContent = isUnlocked() ? "10" : "Pro";
   }
-  function upgradeIcon() { return '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M5 16l3-8 4 5 4-7 3 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>'; }
-  function eliteBadge() { return upgradeIcon() + "Elite — all unlocked"; }
   function planLabelLive() { return provider === "openai" ? "Live · OpenAI" : "Live · Anthropic"; }
 
   /* toast */
