@@ -184,14 +184,14 @@
         </div>`;
       case "winner": {
         const w = b.w;
-        return `<button class="blk winner" data-prompt="${esc(w.prompt)}">
+        return `<button class="blk winner" data-prompt="${esc(w.prompt)}" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left">
           <span class="winner-emoji">${w.emoji}</span>
-          <span class="winner-body">
-            <span class="winner-name">${esc(w.name)}</span>
+          <span class="winner-body" style="flex:1;min-width:0;overflow:hidden">
+            <span class="winner-name" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(w.name)}</span>
             <span class="winner-meta"><span>${esc(w.niche)}</span><span class="wm-up">↑ ${w.momentum}% this week</span></span>
           </span>
           ${sparkSVG(w.spark)}
-          <span class="winner-conf"><span class="wc-num">${w.confidence}</span><span class="wc-cap">Confidence</span></span>
+          <span class="winner-conf" style="flex:none"><span class="wc-num">${w.confidence}</span><span class="wc-cap">Confidence</span></span>
         </button>`;
       }
       case "locked-winners":
@@ -219,7 +219,7 @@
     const coords = pts.map((v, i) => [pad + i * step, h - pad - ((v - min) / range) * (h - pad * 2)]);
     const line = coords.map((c, i) => (i ? "L" : "M") + c[0].toFixed(1) + " " + c[1].toFixed(1)).join(" ");
     const area = line + ` L${(w - pad).toFixed(1)} ${h - pad} L${pad} ${h - pad} Z`;
-    return `<svg class="winner-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    return `<svg class="winner-spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:${w}px;height:${h}px;flex:none">
       <path d="${area}" fill="var(--accent-soft)"></path>
       <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
       <circle cx="${coords[coords.length - 1][0].toFixed(1)}" cy="${coords[coords.length - 1][1].toFixed(1)}" r="2.4" fill="var(--accent)"></circle>
@@ -283,14 +283,49 @@
     return div;
   }
 
-  function appendTyping() {
+  function appendTyping(firstStatus) {
     const div = document.createElement("div");
     div.className = "msg assistant";
-    div.innerHTML = `<div class="assistant-body"><div class="typing"><span></span><span></span><span></span></div></div>`;
+    div.innerHTML = `<div class="assistant-body"><div class="thinking">
+      <span class="think-spinner"></span>
+      <span class="think-text">${esc(firstStatus || "Thinking…")}</span>
+    </div></div>`;
     messagesEl.appendChild(div);
     ensureSpacer();
     scrollDown();
     return div;
+  }
+
+  // swap the status line with a soft fade
+  function setThinking(node, text) {
+    const el = node.querySelector(".think-text");
+    if (!el) return;
+    el.style.opacity = "0";
+    setTimeout(() => { el.textContent = text; el.style.opacity = "1"; }, 140);
+  }
+
+  // context-aware "work" the engine appears to do (becomes literal once a
+  // real data backend is wired — these mirror the actual pipeline steps)
+  function thinkingSteps(q) {
+    const s = (q || "").toLowerCase();
+    if (/daily|today.*winner|winning products/.test(s) && /today|daily/.test(s))
+      return ["Pulling today's movers…", "Scoring AI confidence…", "Charting 7-day momentum…"];
+    if (/(ad script|tiktok script|script|ugc|hook)/.test(s))
+      return ["Studying winning ad angles…", "Drafting hooks & script…"];
+    if (/(landing page|page copy|description|sales page)/.test(s))
+      return ["Modeling high-converting pages…", "Writing your copy…"];
+    if (/(niche|products in|best in|category)/.test(s))
+      return ["Mapping the niche…", "Ranking live opportunities…", "Checking saturation…"];
+    if (/(beginner|start|strategy|advice|how do i|margin|pricing)/.test(s))
+      return ["Pulling the playbook…", "Tailoring next steps…"];
+    // default = full product research pipeline
+    return [
+      "Scanning marketplaces & ad data…",
+      "Cross-referencing trend signals…",
+      "Scoring competition & saturation…",
+      "Pulling supplier options…",
+      "Building your research…",
+    ];
   }
 
   function scrollDown() { thread.scrollTop = thread.scrollHeight; }
@@ -382,7 +417,8 @@
 
     busy = true;
     setComposerEnabled(false);
-    const typing = appendTyping();
+    const steps = thinkingSteps(text);
+    const typing = appendTyping(steps[0]);
 
     try {
       if (provider !== "builtin" && store.raw(LS.key, "")) {
@@ -405,11 +441,21 @@
     }
   }
 
-  /* built-in engine path (with a small delay so the typing dots read naturally) */
+  /* built-in engine path — shows quick rotating "thinking" statuses, then answers */
   function builtinRespond(chat, text, typing) {
     return new Promise((resolve) => {
-      const delay = 420 + Math.random() * 380;
+      const steps = thinkingSteps(text);
+      const visible = Math.min(steps.length, 3);   // keep it quick: at most 3 statuses
+      const per = 430;                              // ms per status
+      let i = 0;
+      const iv = setInterval(() => {
+        i += 1;
+        if (i < visible) setThinking(typing, steps[i]);
+        else clearInterval(iv);
+      }, per);
+      const total = visible * per + 120;            // ~1.0–1.4s total, feels fast but worked
       setTimeout(() => {
+        clearInterval(iv);
         const { blocks, shown } = dropgenRespond(text, chat.shown || []);
         typing.remove();
         const node = appendAssistantNode(renderBlocksHTML(blocks));
@@ -418,7 +464,7 @@
         if (shown) { chat.shown = chat.shown || []; if (!chat.shown.includes(shown)) chat.shown.push(shown); }
         saveChats();
         resolve();
-      }, delay);
+      }, total);
     });
   }
 
@@ -756,15 +802,19 @@
     lastUserEl = appendUserMessage(q);
     chat.messages.push({ role: "user", text: q });
     renderHistory();
-    const typing = appendTyping();
+    const steps = ["Pulling today's movers…", "Scoring AI confidence…", "Charting 7-day momentum…"];
+    const typing = appendTyping(steps[0]);
+    let i = 0;
+    const iv = setInterval(() => { i += 1; if (i < steps.length) setThinking(typing, steps[i]); else clearInterval(iv); }, 430);
     setTimeout(() => {
+      clearInterval(iv);
       typing.remove();
       const blocks = window.DROPGEN.dailyWinnersBlocks({ unlocked: isUnlocked() });
       const node = appendAssistantNode(renderBlocksHTML(blocks));
       anchorToQuestion(node);
       chat.messages.push({ role: "assistant", blocks });
       saveChats();
-    }, 480);
+    }, steps.length * 430 + 120);
     closeNav();
   }
 
